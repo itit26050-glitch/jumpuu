@@ -1,73 +1,278 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rainy.REN</title>
-    <style>
-        body {
-            background-color: #080c14; /* พื้นหลังสีดำอมน้ำเงินเข้ม */
-            color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            text-align: center;
-            padding: 2.5rem;
-            background: rgba(13, 20, 35, 0.85);
-            border: 2px solid #d4af37; /* กรอบสีทอง */
-            border-radius: 16px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); /* เงาสองเรืองแสงนิดๆ */
-            max-width: 450px;
-            width: 90%;
-        }
-        h1 {
-            color: #d4af37; /* หัวข้อสีทอง */
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-            letter-spacing: 2px;
-        }
-        p {
-            color: #94a3b8;
-            font-size: 0.95rem;
-            margin-bottom: 2rem;
-        }
-        .mods-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .mod-btn {
-            background-color: transparent;
-            border: 1px solid #d4af37;
-            color: #f8fafc;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .mod-btn:hover {
-            background-color: #d4af37;
-            color: #080c14;
-            box-shadow: 0 0 10px #d4af37;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rainy.REN</title>
+<style>
+:root{
+  --bg1:#010208; --panel:#060d24;
+  --gold:#d4af37; --gold-l:#f6e27a; --gold-d:#8a6d1c;
+  --text:#dfe6f7; --muted:#8a98bd;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+body{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:20px;font-family:"Segoe UI",Tahoma,sans-serif;color:var(--text);
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%,rgba(122,77,255,.28),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 85%,rgba(40,120,255,.25),transparent 70%),
+    var(--bg1);
+  overflow-x:hidden;
+}
+
+/* ===== เลเยอร์พื้นหลังของแต่ละโหมด ===== */
+.bg{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .9s ease;z-index:0}
+.bg-talk{
+  background:linear-gradient(180deg,#4fb8ff 0%,#a8e0ff 50%,#f4fbff 100%);overflow:hidden}
+.bg-talk::before{ /* เมฆลอย */
+  content:"";position:absolute;top:0;left:0;width:100%;height:100%;
+  background:
+    radial-gradient(ellipse 90px 30px at 20% 18%,#fff,transparent 72%),
+    radial-gradient(ellipse 120px 36px at 70% 30%,#fff,transparent 72%),
+    radial-gradient(ellipse 100px 30px at 40% 62%,rgba(255,255,255,.9),transparent 72%),
+    radial-gradient(ellipse 140px 40px at 85% 80%,#fff,transparent 72%);
+  background-size:420px 360px;animation:drift 40s linear infinite}
+@keyframes drift{to{background-position:420px 0}}
+.bg-analyze{background:radial-gradient(ellipse at 50% 0%,#14060a,#030104 70%)}
+.bg-analyze::before{ /* แสงแดงไล่ขึ้นจากด้านล่าง */
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(0deg,rgba(255,25,35,.7),rgba(150,0,15,.35) 30%,transparent 62%),
+    radial-gradient(ellipse 90% 40% at 50% 105%,rgba(255,60,50,.9),transparent 70%);
+  animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.7}}
+body:has(#talk:checked) .bg-talk,
+body:has(#analyze:checked) .bg-analyze{opacity:1}
+
+/* ===== ดวงดาว (จางลงเมื่อเลือกโหมด) ===== */
+.stars,.stars::before,.stars::after{content:"";position:fixed;inset:0;pointer-events:none;background-repeat:repeat}
+.stars{z-index:1;transition:opacity .9s;
+  background-image:
+    radial-gradient(1.2px 1.2px at 20px 30px,#fff,transparent),
+    radial-gradient(1px 1px at 90px 80px,#cfe0ff,transparent),
+    radial-gradient(1.5px 1.5px at 150px 20px,#fff,transparent),
+    radial-gradient(1px 1px at 60px 140px,#f6e27a,transparent),
+    radial-gradient(1.2px 1.2px at 180px 120px,#fff,transparent);
+  background-size:200px 180px;animation:twinkle 4s ease-in-out infinite}
+.stars::before{
+  background-image:
+    radial-gradient(1.5px 1.5px at 40px 60px,#fff,transparent),
+    radial-gradient(1px 1px at 130px 110px,#b9c9ff,transparent),
+    radial-gradient(2px 2px at 100px 20px,#f6e27a,transparent);
+  background-size:260px 230px;animation:twinkle 6s ease-in-out infinite reverse}
+.stars::after{
+  inset:auto;top:8%;left:-20%;width:140px;height:2px;
+  background:linear-gradient(90deg,transparent,#fff);
+  transform:rotate(25deg);opacity:0;animation:shoot 7s ease-in infinite 2s}
+@keyframes twinkle{50%{opacity:.35}}
+@keyframes shoot{0%{opacity:0;transform:translate(0,0) rotate(25deg)}
+  5%{opacity:1}20%{opacity:0;transform:translate(130vw,60vh) rotate(25deg)}100%{opacity:0}}
+body:has(#talk:checked) .stars{opacity:0}
+body:has(#analyze:checked) .stars{opacity:.25}
+
+/* ===== หน้าต่าง ===== */
+.window{
+  position:relative;z-index:2;width:100%;max-width:380px;
+  padding:34px 24px 30px;border-radius:18px;overflow:hidden;
+  background:linear-gradient(160deg,#0b1a40,var(--panel) 60%,#03060f);
+  border:2px solid var(--gold);
+  box-shadow:0 0 0 5px #050a1a,0 0 0 6px var(--gold-d),0 0 50px rgba(122,77,255,.3),0 0 30px rgba(212,175,55,.25),inset 0 0 40px rgba(0,0,0,.6);
+  transition:border-color .9s,box-shadow .9s;
+}
+.window::before{content:"";position:absolute;inset:8px;border:1px solid rgba(212,175,55,.45);border-radius:12px;pointer-events:none;z-index:1}
+.skin{position:absolute;inset:0;opacity:0;transition:opacity .9s;z-index:0}
+.skin-talk{background:linear-gradient(170deg,#7cc9ff,#c9ecff 60%,#f2fbff)}
+.skin-analyze{background:linear-gradient(0deg,rgba(220,20,35,.55),rgba(90,0,10,.35) 35%,transparent 65%),#07060a}
+.window > :not(.skin):not(.corner):not(input){position:relative;z-index:2}
+.corner{position:absolute;z-index:2;width:22px;height:22px;border:2px solid var(--gold-l);transition:border-color .9s}
+.tl{top:14px;left:14px;border-right:0;border-bottom:0}
+.tr{top:14px;right:14px;border-left:0;border-bottom:0}
+.bl{bottom:14px;left:14px;border-right:0;border-top:0}
+.br{bottom:14px;right:14px;border-left:0;border-top:0}
+
+h1{
+  text-align:center;font-size:2.4rem;letter-spacing:2px;
+  background:linear-gradient(180deg,var(--gold-l),var(--gold) 55%,var(--gold-d));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 12px rgba(212,175,55,.45));
+}
+.sub{text-align:center;color:var(--muted);font-size:.8rem;margin-top:6px;letter-spacing:4px;text-transform:uppercase;transition:color .9s}
+.line{height:1px;margin:18px auto 0;width:70%;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+.sigil{display:block;width:150px;height:150px;margin:22px auto 20px;
+  filter:drop-shadow(0 0 14px rgba(127,166,255,.7));transition:filter .9s}
+.sigil .r1{transform-origin:100px 100px;animation:spin 28s linear infinite}
+.sigil .r2{transform-origin:100px 100px;animation:spin 18s linear infinite reverse}
+.sigil .core{transform-origin:100px 100px;animation:pulse 3.2s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{transform:scale(1.15);opacity:.8}}
+
+input.toggle{position:absolute;opacity:0;pointer-events:none}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;user-select:none;
+  padding:14px;border-radius:12px;font-weight:600;letter-spacing:2px;
+  color:#1a1303;background:linear-gradient(180deg,var(--gold-l),var(--gold) 60%,var(--gold-d));
+  border:1px solid var(--gold-l);box-shadow:0 4px 22px rgba(212,175,55,.4);transition:transform .15s;
+}
+.btn:active{transform:scale(.97)}
+.btn i{width:8px;height:8px;border:solid #1a1303;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-2px,-2px);transition:transform .4s}
+.toggle:checked + .btn i{transform:rotate(225deg) translate(-2px,-2px)}
+
+.tree{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s ease}
+.toggle:checked ~ .tree{grid-template-rows:1fr}
+.tree-in{overflow:hidden;min-height:0}
+svg.arrows{display:block;width:100%;height:auto;margin-top:6px}
+.arrows path{fill:none;stroke:var(--gold);stroke-width:2.5;stroke-linecap:round;
+  stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 5px rgba(246,226,122,.8))}
+.arrows polygon{fill:var(--gold-l);opacity:0}
+.toggle:checked ~ .tree .stem{animation:draw .35s ease forwards .15s}
+.toggle:checked ~ .tree .branch{animation:draw .55s ease forwards .5s}
+.toggle:checked ~ .tree polygon{animation:pop .3s ease forwards 1s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-bottom:2px}
+.col{opacity:0;transform:translateY(-10px)}
+.toggle:checked ~ .tree .col{animation:rise .5s ease forwards 1.05s}
+@keyframes rise{to{opacity:1;transform:none}}
+
+input.pick{position:absolute;opacity:0;pointer-events:none}
+.opt{
+  display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;
+  cursor:pointer;padding:16px 8px;height:100%;border-radius:12px;
+  background:linear-gradient(180deg,rgba(122,77,255,.12),rgba(255,255,255,.03));
+  border:1px solid rgba(212,175,55,.4);transition:.5s;
+}
+.opt svg{width:40px;height:40px;stroke:var(--gold-l);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 6px rgba(246,226,122,.6));transition:.5s}
+.opt svg .f{fill:var(--gold-l);stroke:none}
+.opt b{color:var(--gold-l);letter-spacing:1px;transition:color .5s}
+.opt small{color:var(--muted);font-size:.75rem;transition:color .5s}
+.opt:hover{border-color:var(--gold)}
+.pick:checked + .opt{
+  background:linear-gradient(180deg,rgba(122,77,255,.3),rgba(212,175,55,.12));
+  border-color:var(--gold-l);
+  box-shadow:0 0 22px rgba(122,77,255,.5),0 0 14px rgba(212,175,55,.35),inset 0 0 14px rgba(212,175,55,.15)}
+
+/* ======================= โหมด TALKING : ฟ้าอ่อน ขาว สดใสแนวเกม ======================= */
+body:has(#talk:checked) .skin-talk{opacity:1}
+body:has(#talk:checked) .window{
+  border-color:#fff;
+  box-shadow:0 0 0 5px #2f95e8,0 0 0 8px #fff,0 10px 0 8px #1b6fc2,0 20px 40px rgba(20,90,170,.4)}
+body:has(#talk:checked) .corner{border-color:#fff}
+body:has(#talk:checked) .window::before{border-color:rgba(255,255,255,.8)}
+body:has(#talk:checked) h1{
+  background:linear-gradient(180deg,#fff,#e4f5ff);-webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 3px 0 #1e78d6) drop-shadow(0 0 2px #1e78d6)}
+body:has(#talk:checked) .sub{color:#1d63ad}
+body:has(#talk:checked) .line{background:linear-gradient(90deg,transparent,#fff,transparent)}
+body:has(#talk:checked) .sigil{filter:drop-shadow(0 3px 0 #1e78d6) drop-shadow(0 0 10px #fff)}
+body:has(#talk:checked) .btn{
+  color:#fff;background:linear-gradient(180deg,#5fc5ff,#1f8bea);border-color:#fff;
+  box-shadow:0 5px 0 #1457a8,0 10px 18px rgba(20,90,170,.4);text-shadow:0 1px 0 #1457a8}
+body:has(#talk:checked) .btn i{border-color:#fff}
+body:has(#talk:checked) .arrows path{stroke:#fff;filter:drop-shadow(0 2px 0 #1e78d6)}
+body:has(#talk:checked) .arrows polygon{fill:#fff}
+body:has(#talk:checked) .opt{
+  background:linear-gradient(180deg,#fff,#e6f5ff);border-color:#fff;box-shadow:0 4px 0 #8fcbf5}
+body:has(#talk:checked) .opt svg{stroke:#1f8bea;filter:none}
+body:has(#talk:checked) .opt svg .f{fill:#ffb400}
+body:has(#talk:checked) .opt b{color:#1767b8}
+body:has(#talk:checked) .opt small{color:#5b8ab5}
+body:has(#talk:checked) .pick:checked + .opt{
+  background:linear-gradient(180deg,#fff7cf,#ffe58a);border-color:#ffb400;
+  box-shadow:0 4px 0 #e09a00,0 0 18px rgba(255,200,40,.7)}
+
+/* ======================= โหมด ANALYZING : มืด แสงแดงไล่จากล่าง ======================= */
+body:has(#analyze:checked) .skin-analyze{opacity:1}
+body:has(#analyze:checked) .window{
+  border-color:#b8902c;
+  box-shadow:0 0 0 5px #0a0305,0 0 0 6px #6b1118,0 0 50px rgba(255,30,40,.45),inset 0 0 50px rgba(0,0,0,.8)}
+body:has(#analyze:checked) .corner{border-color:#e0b04a}
+body:has(#analyze:checked) .sub{color:#b07077}
+body:has(#analyze:checked) .sigil{filter:drop-shadow(0 0 14px rgba(255,40,50,.85)) hue-rotate(-20deg) saturate(.7) brightness(.9)}
+body:has(#analyze:checked) .opt{
+  background:linear-gradient(180deg,rgba(255,30,40,.1),rgba(0,0,0,.4));border-color:rgba(200,60,60,.5)}
+body:has(#analyze:checked) .opt small{color:#b08a8e}
+body:has(#analyze:checked) .pick:checked + .opt{
+  background:linear-gradient(180deg,rgba(255,40,50,.35),rgba(80,0,10,.5));border-color:#ff6b6b;
+  box-shadow:0 0 22px rgba(255,40,50,.6),inset 0 0 14px rgba(255,80,80,.25)}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Rainy.REN</h1>
-        <p>Select your operational mode</p>
-        
-        <div class="mods-container">
-            <button class="mod-btn" onclick="alert('Entering Talking Mode...')">💬 Talking Mode</button>
-            <button class="mod-btn" onclick="alert('Entering Analyzing Mode...')">🧠 Analyzing Mode</button>
-        </div>
+<div class="bg bg-talk"></div>
+<div class="bg bg-analyze"></div>
+<div class="stars"></div>
+
+<main class="window">
+  <div class="skin skin-talk"></div>
+  <div class="skin skin-analyze"></div>
+  <span class="corner tl"></span><span class="corner tr"></span>
+  <span class="corner bl"></span><span class="corner br"></span>
+
+  <header>
+    <h1>Rainy.REN</h1>
+    <p class="sub">Astral Console</p>
+    <div class="line"></div>
+  </header>
+
+  <svg class="sigil" viewBox="0 0 200 200" aria-hidden="true">
+    <defs>
+      <radialGradient id="g" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#f6e27a"/><stop offset="1" stop-color="#7fa6ff" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <g class="r1" fill="none" stroke="#d4af37" stroke-width="1.5">
+      <circle cx="100" cy="100" r="92" stroke-dasharray="3 7"/>
+      <circle cx="100" cy="100" r="80"/>
+      <circle cx="100" cy="8" r="4" fill="#f6e27a"/><circle cx="192" cy="100" r="3" fill="#7fa6ff"/>
+      <circle cx="20" cy="100" r="3" fill="#f6e27a"/>
+    </g>
+    <g class="r2" fill="none" stroke="#7fa6ff" stroke-width="1.2">
+      <polygon points="100,28 172,100 100,172 28,100" stroke="#d4af37"/>
+      <polygon points="100,28 172,100 100,172 28,100" transform="rotate(45 100 100)"/>
+      <circle cx="100" cy="100" r="46" stroke-dasharray="2 5"/>
+    </g>
+    <g class="core">
+      <circle cx="100" cy="100" r="34" fill="url(#g)"/>
+      <path d="M100 70 L106 94 L130 100 L106 106 L100 130 L94 106 L70 100 L94 94 Z" fill="#fff"/>
+    </g>
+  </svg>
+
+  <input type="checkbox" id="open" class="toggle">
+  <label for="open" class="btn">SELECT MODS<i></i></label>
+
+  <div class="tree"><div class="tree-in">
+    <svg class="arrows" viewBox="0 0 300 74" aria-hidden="true">
+      <path class="stem" pathLength="1" d="M150 0 V22"/>
+      <path class="branch" pathLength="1" d="M150 22 C150 48 75 38 75 60"/>
+      <path class="branch" pathLength="1" d="M150 22 C150 48 225 38 225 60"/>
+      <polygon points="68,58 82,58 75,72"/>
+      <polygon points="218,58 232,58 225,72"/>
+    </svg>
+
+    <div class="cards">
+      <div class="col">
+        <input type="radio" name="mod" id="talk" class="pick">
+        <label for="talk" class="opt">
+          <svg viewBox="0 0 40 40"><path d="M6 8h28a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H18l-8 7v-7H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z"/><circle class="f" cx="13" cy="18" r="1.8"/><circle class="f" cx="20" cy="18" r="1.8"/><circle class="f" cx="27" cy="18" r="1.8"/></svg>
+          <b>Talking</b><small>โหมดพูดคุย</small>
+        </label>
+      </div>
+      <div class="col">
+        <input type="radio" name="mod" id="analyze" class="pick">
+        <label for="analyze" class="opt">
+          <svg viewBox="0 0 40 40"><path d="M3 20C9 10 15 7 20 7s11 3 17 13c-6 10-12 13-17 13S9 30 3 20z"/><path class="f" d="M20 13l1.8 5.2L27 20l-5.2 1.8L20 27l-1.8-5.2L13 20l5.2-1.8z"/></svg>
+          <b>Analyzing</b><small>โหมดวิเคราะห์</small>
+        </label>
+      </div>
     </div>
+  </div></div>
+</main>
 </body>
 </html>
